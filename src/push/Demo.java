@@ -1,5 +1,6 @@
 package push;
 
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -7,6 +8,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.open.mmjpg.jsoup.MeitziuJsoupService;
+import com.open.mmjpg.jsoup.PCMainBean;
+import com.open.mmjpg.jsoup.UrlUtils;
 
 import push.android.AndroidBroadcast;
 import push.android.AndroidCustomizedcast;
@@ -51,12 +56,17 @@ public class Demo {
 	}
 	
 	public void sendAndroidUnicast() throws Exception {
+		List<PCMainBean> list = MeitziuJsoupService.parsepcpicnew(UrlUtils.MEIZITU,1);
+		java.util.Random random=new java.util.Random();// 定义随机类
+		int result=random.nextInt(list.size());// 返回[0,10)集合中的整数，注意不包括10
+		PCMainBean bean = list.get(result);
+		
 		AndroidUnicast unicast = new AndroidUnicast(appkey,appMasterSecret);
 		// TODO Set your device token
 		unicast.setDeviceToken( "AgpSYtzg9FvDh03jL3JMcabtUugJ0Wgw418bU4cPxg-o");
-		unicast.setTicker( "Android unicast ticker");
-		unicast.setTitle(  "中文的title");
-		unicast.setText(   "Android unicast text");
+		unicast.setTicker(bean.getAlt());
+		unicast.setTitle("妹子图 热推美女");
+		unicast.setText(bean.getAlt());
 		unicast.goAppAfterOpen();
 		unicast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
 		// TODO Set 'production_mode' to 'false' if it's a test device. 
@@ -110,7 +120,7 @@ public class Demo {
 		// TODO Set your alias here, and use comma to split them if there are multiple alias.
 		// And if you have many alias, you can also upload a file containing these alias, then 
 		// use file_id to send customized notification.
-		customizedcast.setAlias("alias", "alias_type");
+		customizedcast.setAlias("865932027267366", "Alias");
 		customizedcast.setTicker( "Android customizedcast ticker");
 		customizedcast.setTitle(  "中文的title");
 		customizedcast.setText(   "Android customizedcast text");
@@ -241,9 +251,13 @@ public class Demo {
 	
 	public static void main(String[] args) {
 		// TODO set your appkey and master secret here
-		Demo demo = new Demo("your appkey", "the app master secret");
+		String appkey = "59759476310c93538100046a";
+		String appMasterSecret = "0aaubsqagfhisexrr9ekszbfy2zgmcsh";
+		Demo demo = new Demo(appkey, appMasterSecret);
 		try {
 			demo.sendAndroidUnicast();
+//			demo.sendAndroidCustomizedcast();
+//			demo.sendAndroidBroadcast();
 			/* TODO these methods are all available, just fill in some fields and do the test
 			 * demo.sendAndroidCustomizedcastFile();
 			 * demo.sendAndroidBroadcast();
